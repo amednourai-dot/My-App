@@ -1,0 +1,21 @@
+{
+  "name": "My Calculator",
+  "short_name": "My Calculator",
+  "description": "حاسبة وأدوات رياضية وتقنية متكاملة",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3f5fb",
+  "theme_color": "#4f46e5",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
