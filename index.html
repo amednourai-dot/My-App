@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#4f46e5">
+<meta name="description" content="My Calculator - حاسبة وأدوات رياضية وتقنية متكاملة">
+<link rel="manifest" href="manifest.json">
+<title>My Calculator</title>
+
+<style>
+:root{
+--primary:#4f46e5;
+--primary2:#6366f1;
+--bg:#f3f5fb;
+--card:#fff;
+--text:#172033;
+--muted:#6b7280;
+--key:#eef0f7;
+--border:#e2e5ec;
+--danger:#ef4444;
+--success:#16a34a;
+--shadow:0 5px 20px #00000010
+}
+body.dark{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f8fafc;
+--muted:#94a3b8;
+--key:#334155;
+--border:#334155;
+--shadow:0 5px 20px #00000030
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
+overscroll-behavior:none;
+font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+background:var(--bg);
+color:var(--text)
+}
+button,input,textarea,select{font:inherit}
+button{border:0;cursor:pointer}
+.app{
+height:100dvh;
+max-width:560px;
+margin:auto;
+display:flex;
+flex-direction:column;
+overflow:hidden
+}
+header{
+padding:12px 14px 8px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px
+}
+.logo{
+font-size:21px;
+font-weight:900
+}
+.header-actions{
+display:flex;
+gap:6px
+}
+.icon-btn{
+width:42px;
+height:42px;
+border-radius:14px;
+background:var(--card);
+color:var(--text);
+box-shadow:var(--shadow)
+}
+.search{
+padding:0 14px 10px
+}
+.search input{
+width:100%;
+height:45px;
+border:1px solid var(--border);
+border-radius:15px;
+background:var(--card);
+color:var(--text);
+padding:0 15px;
+outline:none
+}
+.categories{
+padding:0 12px 12px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:9px;
+overflow:auto
+}
+.category{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:17px;
+padding:13px;
+min-height:82px;
+text-align:right;
+box-shadow:var(--shadow);
+position:relative
+}
+.category .emoji{font-size:25px}
+.category strong{display:block;margin-top:4px}
+.category small{color:var(--muted)}
+.star{
+position:absolute;
+left:8px;
+top:8px;
+background:transparent;
+color:#f59e0b;
+font-size:17px
+}
+.screen{
+display:none;
+flex:1;
+min-height:0;
+flex-direction:column
+}
+.screen.active{display:flex}
+.screen-head{
+padding:10px 14px;
+display:flex;
+align-items:center;
+gap:9px
+}
+.back{
+width:42px;
+height:42px;
+border-radius:13px;
+background:var(--card);
+color:var(--text);
+box-shadow:var(--shadow)
+}
+.screen-title{
+font-size:20px;
+font-weight:900
+}
+.content{
+flex:1;
+overflow:auto;
+padding:0 14px 25px
+}
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
+padding:14px;
+margin-bottom:12px;
+box-shadow:var(--shadow)
+}
+.card h3{margin:0 0 10px}
+input,textarea,select{
+width:100%;
+background:var(--bg);
+border:1px solid var(--border);
+color:var(--text);
+border-radius:12px;
+padding:11px;
+outline:none
+}
+textarea{
+min-height:150px;
+resize:vertical;
+direction:ltr;
+text-align:left
+}
+.row{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+margin-top:9px
+}
+.row3{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin-top:9px
+}
+.btn{
+background:var(--primary);
+color:#fff;
+padding:11px 14px;
+border-radius:12px;
+font-weight:700
+}
+.btn.secondary{
+background:var(--key);
+color:var(--text)
+}
+.btn.danger{background:var(--danger)}
+.btn.success{background:var(--success)}
+.result{
+margin-top:10px;
+padding:12px;
+background:var(--bg);
+border:1px solid var(--border);
+border-radius:12px;
+white-space:pre-wrap;
+word-break:break-word;
+direction:ltr;
+text-align:left;
+min-height:48px
+}
+.tools-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:9px
+}
+.tool{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:16px;
+padding:14px;
+text-align:right;
+box-shadow:var(--shadow)
+}
+.tool b{display:block}
+.tool small{color:var(--muted)}
+.calc-display{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
+padding:14px;
+margin-bottom:10px
+}
+.calc-expression{
+height:35px;
+color:var(--muted);
+direction:ltr;
+text-align:left;
+overflow:hidden
+}
+.calc-result{
+font-size:31px;
+font-weight:800;
+direction:ltr;
+text-align:left;
+overflow:hidden
+}
+.keys{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px
+}
+.key{
+height:58px;
+border-radius:15px;
+background:var(--key);
+color:var(--text);
+font-size:18px;
+font-weight:700
+}
+.key.op{color:var(--primary)}
+.key.equal{
+background:var(--primary);
+color:#fff
+}
+.switch{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:13px 0;
+border-bottom:1px solid var(--border)
+}
+.switch:last-child{border:0}
+.switch input{
+width:45px;
+height:25px;
+accent-color:var(--primary)
+}
+.color-row{
+display:flex;
+gap:9px;
+flex-wrap:wrap;
+margin-top:10px
+}
+.color{
+width:38px;
+height:38px;
+border-radius:50%;
+border:3px solid var(--card);
+box-shadow:0 0 0 1px var(--border)
+}
+.empty{
+text-align:center;
+color:var(--muted);
+padding:30px
+}
+.history-item{
+padding:11px;
+border-bottom:1px solid var(--border);
+direction:ltr;
+text-align:left
+}
+.history-item:last-child{border:0}
+.history-item small{display:block;color:var(--muted)}
+.info{
+line-height:1.8
+}
+.badge{
+display:inline-block;
+padding:5px 9px;
+background:var(--key);
+border-radius:9px;
+margin:3px
+}
+footer{
+padding:8px;
+text-align:center;
+font-size:12px;
+color:var(--muted)
+}
+@media(max-width:380px){
+.categories{grid-template-columns:1fr}
+.keys{gap:5px}
+.key{height:52px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header id="mainHeader">
+<div class="logo">🧮 My Calculator</div>
+<div class="header-actions">
+<button class="icon-btn" onclick="openScreen('history')">🕘</button>
+<button class="icon-btn" onclick="openScreen('settings')">⚙️</button>
+</div>
+</header>
+
+<div id="home" class="screen active">
+<div class="search">
+<input id="search" placeholder="🔎 ابحث عن أداة..." oninput="searchTools()">
+</div>
+<div id="categories" class="categories"></div>
+<footer>My Calculator • Ahmed Ali Nour</footer>
+</div>
+
+<div id="toolScreen" class="screen">
+<div class="screen-head">
+<button class="back" onclick="goHome()">‹</button>
+<div class="screen-title" id="screenTitle"></div>
+</div>
+<div class="content" id="screenContent"></div>
+</div>
+
+</div>
+
+<script>
+const categories=[
+["🧮","الحاسبة","عادية وعلمية","calculator"],
+["🔢","الأنظمة العددية","Binary • Octal • Hex","converter"],
+["٪","النسبة والخصم","خصم • ضريبة • زيادة","percentage"],
+["📐","الهندسة","مساحة • محيط • حجم","geometry"],
+["📊","الإحصاء","متوسط • وسيط • منوال","statistics"],
+["🔄","محول الوحدات","طول • وزن • حرارة","units"],
+["💻","أدوات المطور","JSON • Base64 • Hash","developer"],
+["🌐","الشبكات","IP • HTTP","network"],
+["📝","أدوات النصوص","تحويل ومعالجة النص","texttools"],
+["🎨","الألوان","HEX • RGB • HSL","colors"],
+["🔐","الأمن التعليمي","Password • ROT13","security"],
+["🧰","أدوات إضافية","وقت • عمر • UUID","tools"],
+["⭐","المفضلة","أدواتك المفضلة","favorites"],
+["ℹ️","عنّي","Ahmed Ali Nour","about"]
+];
+
+let history=JSON.parse(localStorage.getItem("mc_history")||"[]");
+let favorites=JSON.parse(localStorage.getItem("mc_favorites")||"[]");
+let currentScreen="";
+let deferredPrompt=null;
+
+function saveHistory(expr,result){
+history.unshift({expr,result,date:new Date().toLocaleString("ar")});
+history=history.slice(0,50);
+localStorage.setItem("mc_history",JSON.stringify(history));
+}
+
+function renderHome(list=categories){
+const box=document.getElementById("categories");
+box.innerHTML=list.map(x=>`
+<div class="category" onclick="openScreen('${x[3]}')">
+<button class="star" onclick="event.stopPropagation();toggleFavorite('${x[3]}')">${favorites.includes(x[3])?"★":"☆"}</button>
+<div class="emoji">${x[0]}</div>
+<strong>${x[1]}</strong>
+<small>${x[2]}</small>
+</div>`).join("");
+}
+
+function searchTools(){
+const q=document.getElementById("search").value.toLowerCase().trim();
+if(!q)return renderHome();
+renderHome(categories.filter(x=>x.join(" ").toLowerCase().includes(q)));
+}
+
+function toggleFavorite(id){
+if(favorites.includes(id))favorites=favorites.filter(x=>x!==id);
+else favorites.push(id);
+localStorage.setItem("mc_favorites",JSON.stringify(favorites));
+renderHome();
+}
+
+function goHome(){
+document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+document.getElementById("home").classList.add("active");
+document.getElementById("mainHeader").style.display="flex";
+}
+
+function openScreen(id){
+currentScreen=id;
+document.getElementById("mainHeader").style.display="none";
+document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+document.getElementById("toolScreen").classList.add("active");
+const c=categories.find(x=>x[3]===id);
+document.getElementById("screenTitle").textContent=c?c[1]:id;
+const box=document.getElementById("screenContent");
+const pages={
+calculator:calculatorPage,
+converter:converterPage,
+percentage:percentagePage,
+geometry:geometryPage,
+statistics:statisticsPage,
+units:unitsPage,
+developer:developerPage,
+network:networkPage,
+texttools:textToolsPage,
+colors:colorsPage,
+security:securityPage,
+tools:toolsPage,
+favorites:favoritesPage,
+about:aboutPage,
+history:historyPage,
+settings:settingsPage
+};
+box.innerHTML=(pages[id]||(()=>"<div class='empty'>الأداة غير موجودة</div>"))();
+if(id==="calculator")initCalculator();
+if(id==="settings")initSettings();
+if(id==="favorites")renderFavorites();
+}
+
+function calculatorPage(){
+return `<div class="calc-display">
+<div class="calc-expression" id="calcExpression"></div>
+<div class="calc-result" id="calcResult">0</div>
+</div>
+<div class="keys">
+<button class="key" onclick="calcInput('(')">(</button>
+<button class="key" onclick="calcInput(')')">)</button>
+<button class="key op" onclick="calcInput('%')">%</button>
+<button class="key op" onclick="calcClear()">AC</button>
+<button class="key" onclick="calcInput('7')">7</button>
+<button class="key" onclick="calcInput('8')">8</button>
+<button class="key" onclick="calcInput('9')">9</button>
+<button class="key op" onclick="calcInput('/')">÷</button>
+<button class="key" onclick="calcInput('4')">4</button>
+<button class="key" onclick="calcInput('5')">5</button>
+<button class="key" onclick="calcInput('6')">6</button>
+<button class="key op" onclick="calcInput('*')">×</button>
+<button class="key" onclick="calcInput('1')">1</button>
+<button class="key" onclick="calcInput('2')">2</button>
+<button class="key" onclick="calcInput('3')">3</button>
+<button class="key op" onclick="calcInput('-')">−</button>
+<button class="key" onclick="calcInput('0')">0</button>
+<button class="key" onclick="calcInput('.')">.</button>
+<button class="key op" onclick="calcInput('+')">+</button>
+<button class="key equal" onclick="calcEquals()">=</button>
+</div>
+<div class="row">
+<button class="btn secondary" onclick="calcInput('Math.PI')">π</button>
+<button class="btn secondary" onclick="calcInput('Math.E')">e</button>
+</div>
+</div>`;
+}
+
+let calcValue="";
+
+function initCalculator(){
+calcValue="";
+updateCalc();
+}
+
+function calcInput(v){
+calcValue+=v;
+updateCalc();
+}
+
+function calcClear(){
+calcValue="";
+updateCalc();
+}
+
+function safeCalculate(expression){
+let e=expression
+.replace(/π/g,"Math.PI")
+.replace(/√/g,"Math.sqrt")
+.replace(/sin/g,"Math.sin")
+.replace(/cos/g,"Math.cos")
+.replace(/tan/g,"Math.tan")
+.replace(/log/g,"Math.log10")
+.replace(/ln/g,"Math.log")
+.replace(/\^/g,"**");
+if(!/^[0-9+\-*/%().,\sA-Za-z_]+$/.test(e))throw new Error("Invalid");
+if(/(?:constructor|prototype|window|document|globalThis|Function|eval)/i.test(e))throw new Error("Invalid");
+return Function('"use strict";return ('+e+')')();
+}
+
+function updateCalc(){
+const a=document.getElementById("calcExpression");
+const b=document.getElementById("calcResult");
+if(a)a.textContent=calcValue;
+if(b)b.textContent=calcValue||"0";
+}
+
+function calcEquals(){
+if(!calcValue)return;
+try{
+let r=safeCalculate(calcValue);
+if(!Number.isFinite(r))throw new Error();
+document.getElementById("calcResult").textContent=r;
+saveHistory(calcValue,r);
+}catch{
+document.getElementById("calcResult").textContent="خطأ";
+}
+}
+
+function converterPage(){
+return `<div class="card">
+<h3>تحويل الأنظمة العددية</h3>
+<input id="numInput" placeholder="أدخل رقمًا صحيحًا">
+<div class="row">
+<select id="fromBase">
+<option value="10">Decimal</option>
+<option value="2">Binary</option>
+<option value="8">Octal</option>
+<option value="16">Hex</option>
+</select>
+<select id="toBase">
+<option value="2">Binary</option>
+<option value="8">Octal</option>
+<option value="10">Decimal</option>
+<option value="16">Hex</option>
+</select>
+</div>
+<button class="btn" style="margin-top:9px;width:100%" onclick="convertBase()">تحويل</button>
+<div class="result" id="baseResult"></div>
+</div>`;
+}
+
+function convertBase(){
+try{
+let value=document.getElementById("numInput").value.trim();
+let from=Number(document.getElementById("fromBase").value);
+let to=Number(document.getElementById("toBase").value);
+if(!value)throw 0;
+let sign=value.startsWith("-")?"-":"";
+let raw=sign?value.slice(1):value;
+const chars="0123456789ABCDEF";
+for(const c of raw.toUpperCase()){
+if(!chars.slice(0,from).includes(c))throw 0;
+}
+let n=BigInt((sign||"")+parseInt(raw,from));
+if(from===10)n=BigInt(value);
+let out=n.toString(to).toUpperCase();
+document.getElementById("baseResult").textContent=out;
+}catch{
+document.getElementById("baseResult").textContent="رقم غير صالح";
+}
+}
+
+function percentagePage(){
+return `<div class="card">
+<h3>الخصم</h3>
+<input id="pPrice" type="number" placeholder="السعر">
+<input id="pDiscount" type="number" placeholder="نسبة الخصم" style="margin-top:8px">
+<button class="btn" style="margin-top:8px;width:100%" onclick="calcDiscount()">احسب</button>
+<div class="result" id="pResult"></div>
+</div>
+<div class="card">
+<h3>الضريبة / الزيادة</h3>
+<input id="pBase" type="number" placeholder="القيمة">
+<input id="pPercent" type="number" placeholder="النسبة" style="margin-top:8px">
+<button class="btn" style="margin-top:8px;width:100%" onclick="calcIncrease()">احسب</button>
+<div class="result" id="pResult2"></div>
+</div>`;
+}
+
+function calcDiscount(){
+let p=Number(pPrice.value),d=Number(pDiscount.value);
+let v=p*d/100;
+pResult.textContent=`قيمة الخصم: ${v}\nالسعر النهائي: ${p-v}`;
+}
+
+function calcIncrease(){
+let p=Number(pBase.value),x=Number(pPercent.value);
+let v=p*x/100;
+pResult2.textContent=`قيمة الزيادة: ${v}\nالإجمالي: ${p+v}`;
+}
+
+function geometryPage(){
+return `<div class="card">
+<h3>الهندسة</h3>
+<select id="shape" onchange="shapeFields()" >
+<option value="circle">دائرة</option>
+<option value="square">مربع</option>
+<option value="rectangle">مستطيل</option>
+<option value="triangle">مثلث</option>
+<option value="cube">مكعب</option>
+<option value="cylinder">أسطوانة</option>
+<option value="sphere">كرة</option>
+<option value="cone">مخروط</option>
+</select>
+<div id="shapeFields" style="margin-top:9px"></div>
+<button class="btn" style="margin-top:9px;width:100%" onclick="calculateShape()">احسب</button>
+<div class="result" id="shapeResult"></div>
+</div>`;
+}
+
+function shapeFields(){
+const s=shape.value;
+const labels={
+circle:["نصف القطر"],
+square:["الضلع"],
+rectangle:["الطول","العرض"],
+triangle:["القاعدة","الارتفاع"],
+cube:["الضلع"],
+cylinder:["نصف القطر","الارتفاع"],
+sphere:["نصف القطر"],
+cone:["نصف القطر","الارتفاع"]
+};
+shapeFields.innerHTML=labels[s].map((x,i)=>`<input class="shapeInput" type="number" placeholder="${x}" style="margin-top:${i?8:0}px">`).join("");
+}
+shapeFields();
+
+function calculateShape(){
+const s=shape.value;
+const a=[...document.querySelectorAll(".shapeInput")].map(x=>Number(x.value));
+let area=0,per=0,vol=0;
+if(s==="circle"){area=Math.PI*a[0]**2;per=2*Math.PI*a[0]}
+if(s==="square"){area=a[0]**2;per=4*a[0]}
+if(s==="rectangle"){area=a[0]*a[1];per=2*(a[0]+a[1])}
+if(s==="triangle"){area=a[0]*a[1]/2}
+if(s==="cube"){area=6*a[0]**2;vol=a[0]**3}
+if(s==="cylinder"){area=2*Math.PI*a[0]*(a[0]+a[1]);vol=Math.PI*a[0]**2*a[1]}
+if(s==="sphere"){area=4*Math.PI*a[0]**2;vol=4*Math.PI*a[0]**3/3}
+if(s==="cone"){area=Math.PI*a[0]*(a[0]+Math.sqrt(a[0]**2+a[1]**2));vol=Math.PI*a[0]**2*a[1]/3}
+shapeResult.textContent=`المساحة: ${area.toFixed(6)}${per?`\nالمحيط: ${per.toFixed(6)}`:""}${vol?`\nالحجم: ${vol.toFixed(6)}`:""}`;
+}
+
+function statisticsPage(){
+return `<div class="card">
+<h3>الإحصاء</h3>
+<textarea id="statsInput" placeholder="أدخل الأرقام مفصولة بمسافات أو فواصل"></textarea>
+<button class="btn" style="margin-top:8px;width:100%" onclick="calculateStats()">احسب</button>
+<div class="result" id="statsResult"></div>
+</div>`;
+}
+
+function calculateStats(){
+let a=statsInput.value.split(/[,\s]+/).filter(Boolean).map(Number).filter(Number.isFinite);
+if(!a.length){statsResult.textContent="أدخل أرقامًا صحيحة";return}
+a.sort((x,y)=>x-y);
+let sum=a.reduce((x,y)=>x+y,0);
+let mean=sum/a.length;
+let median=a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;
+let counts={};
+a.forEach(x=>counts[x]=(counts[x]||0)+1);
+let max=Math.max(...Object.values(counts));
+let mode=max>1?Object.keys(counts).filter(x=>counts[x]===max).join(", "):"لا يوجد";
+let variance=a.reduce((s,x)=>s+(x-mean)**2,0)/a.length;
+statsResult.textContent=`العدد: ${a.length}
+المجموع: ${sum}
+المتوسط: ${mean}
+الوسيط: ${median}
+المنوال: ${mode}
+التباين: ${variance}
+الانحراف المعياري: ${Math.sqrt(variance)}`;
+}
+
+function unitsPage(){
+return `<div class="card">
+<h3>محول الوحدات</h3>
+<select id="unitType" onchange="unitFields()">
+<option value="length">الطول</option>
+<option value="weight">الوزن</option>
+<option value="temperature">الحرارة</option>
+<option value="speed">السرعة</option>
+<option value="area">المساحة</option>
+<option value="volume">الحجم</option>
+<option value="time">الوقت</option>
+<option value="data">البيانات</option>
+</select>
+<input id="unitValue" type="number" placeholder="القيمة" style="margin-top:8px">
+<div class="row">
+<select id="unitFrom"></select>
+<select id="unitTo"></select>
+</div>
+<button class="btn" style="margin-top:8px;width:100%" onclick="convertUnit()">تحويل</button>
+<div class="result" id="unitResult"></div>
+</div>`;
+}
+
+const unitSets={
+length:{m:1,km:1000,cm:.01,mm:.001,ft:.3048,inch:.0254,yd:.9144,mile:1609.344},
+weight:{g:1,kg:1000,mg:.001,lb:453.59237,oz:28.349523125},
+speed:{ms:1,kph:1/3.6,mph:.44704,knot:.514444},
+area:{m2:1,km2:1e6,cm2:.0001,ft2:.09290304,acre:4046.8564224},
+volume:{liter:1,m3:1000,ml:.001,gallon:3.785411784,cm3:.001},
+time:{second:1,minute:60,hour:3600,day:86400,week:604800},
+data:{B:1,KB:1024,MB:1024**2,GB:1024**3,TB:1024**4}
+};
+
+function unitFields(){
+let type=unitType.value;
+let names=type==="temperature"?["C","F","K"]:Object.keys(unitSets[type]);
+unitFrom.innerHTML=names.map(x=>`<option>${x}</option>`).join("");
+unitTo.innerHTML=names.map(x=>`<option>${x}</option>`).join("");
+}
+function convertUnit(){
+let v=Number(unitValue.value),type=unitType.value,a=unitFrom.value,b=unitTo.value,r;
+if(type==="temperature"){
+let c=a==="C"?v:a==="F"?(v-32)*5/9:v-273.15;
+r=b==="C"?c:b==="F"?c*9/5+32:c+273.15;
+}else r=v*unitSets[type][a]/unitSets[type][b];
+unitResult.textContent=Number(r.toFixed(10));
+}
+unitFields();
+
+function developerPage(){
+const tools=[
+["JSON","تنسيق / ضغط / تحقق","json"],
+["Base64","ترميز وفك ترميز","base64"],
+["URL","Encode / Decode","url"],
+["UUID","توليد UUID","uuid"],
+["Timestamp","Unix ↔ Date","timestamp"],
+["Hash","SHA-256 / SHA-512","hash"],
+["HTML","تنسيق / ضغط HTML","html"],
+["JavaScript","تنسيق / ضغط JS","js"]
+];
+return `<div class="tools-grid">${tools.map(x=>`
+<button class="tool" onclick="developerTool('${x[2]}')">
+<b>${x[0]}</b><small>${x[1]}</small>
+</button>`).join("")}</div>
+<div id="devPanel" style="margin-top:12px"></div>`;
+}
+
+function developerTool(type){
+const p=document.getElementById("devPanel");
+const configs={
+json:["JSON","الصق JSON هنا..."],
+base64:["Base64","اكتب النص هنا..."],
+url:["URL","اكتب النص أو الرابط هنا..."],
+timestamp:["Timestamp","أدخل Unix timestamp أو اتركه فارغًا"],
+hash:["Hash","اكتب النص المراد تجزئته..."],
+html:["HTML","اكتب HTML هنا..."],
+js:["JavaScript","اكتب JavaScript هنا..."]
+};
+if(type==="uuid"){
+p.innerHTML=`<div class="card"><h3>توليد UUID</h3>
+<div class="row">
+<input id="uuidCount" type="number" min="1" max="20" value="1">
+<button class="btn" onclick="generateUUIDs()">توليد</button>
+</div>
+<div class="result" id="devResult"></div>
+<button class="btn secondary" style="margin-top:8px;width:100%" onclick="copyResult()">نسخ</button>
+</div>`;
+return;
+}
+if(type==="timestamp"){
+p.innerHTML=`<div class="card"><h3>Timestamp</h3>
+<select id="timestampMode">
+<option value="now">الوقت الحالي</option>
+<option value="seconds">Unix Seconds → Date</option>
+<option value="milliseconds">Unix Milliseconds → Date</option>
+</select>
+<input id="timestampInput" placeholder="Timestamp" style="margin-top:8px">
+<button class="btn" style="margin-top:8px;width:100%" onclick="timestampAction()">تحويل</button>
+<div class="result" id="devResult"></div>
+</div>`;
+return;
+}
+if(type==="hash"){
+p.innerHTML=`<div class="card"><h3>Hash</h3>
+<textarea id="devInput" placeholder="${configs[type][1]}"></textarea>
+<select id="hashAlgorithm" style="margin-top:8px">
+<option value="SHA-256">SHA-256</option>
+<option value="SHA-384">SHA-384</option>
+<option value="SHA-512">SHA-512</option>
+</select>
+<button class="btn" style="margin-top:8px;width:100%" onclick="hashAction()">إنشاء Hash</button>
+<div class="result" id="devResult"></div>
+<button class="btn secondary" style="margin-top:8px;width:100%" onclick="copyResult()">نسخ</button>
+</div>`;
+return;
+}
+p.innerHTML=`<div class="card">
+<h3>${configs[type][0]}</h3>
+<textarea id="devInput" placeholder="${configs[type][1]}"></textarea>
+<div class="row">
+<button class="btn" onclick="developerProcess('${type}','format')">تنسيق</button>
+<button class="btn secondary" onclick="developerProcess('${type}','minify')">ضغط</button>
+</div>
+<div class="row">
+<button class="btn success" onclick="copyResult()">نسخ</button>
+<button class="btn danger" onclick="document.getElementById('devInput').value='';document.getElementById('devResult').textContent=''">مسح</button>
+</div>
+<div class="result" id="devResult"></div>
+</div>`;
+}
+
+function developerProcess(type,mode){
+const input=document.getElementById("devInput").value;
+let out="";
+try{
+if(type==="json"){
+let obj=JSON.parse(input);
+out=mode==="format"?JSON.stringify(obj,null,2):JSON.stringify(obj);
+}
+if(type==="base64"){
+out=mode==="format"?base64Encode(input):base64Decode(input);
+}
+if(type==="url"){
+out=mode==="format"?encodeURIComponent(input):decodeURIComponent(input);
+}
+if(type==="html"){
+out=mode==="format"?formatHTML(input):minifyHTML(input);
+}
+if(type==="js"){
+out=mode==="format"?formatJS(input):minifyJS(input);
+}
+document.getElementById("devResult").textContent=out;
+}catch{
+document.getElementById("devResult").textContent="النص غير صالح أو حدث خطأ";
+}
+}
+
+function base64Encode(text){
+const bytes=new TextEncoder().encode(text);
+let binary="";
+bytes.forEach(b=>binary+=String.fromCharCode(b));
+return btoa(binary);
+}
+
+function base64Decode(text){
+const binary=atob(text.trim());
+const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+return new TextDecoder().decode(bytes);
+}
+
+function formatHTML(s){
+return s.replace(/>\s*</g,"><").replace(/></g,">\n<").split("\n").map(x=>x.trim()).join("\n");
+}
+
+function minifyHTML(s){
+return s.replace(/>\s+</g,"><").replace(/\s{2,}/g," ").trim();
+}
+
+function formatJS(s){
+return s.replace(/\{/g,"{\n").replace(/\}/g,"\n}\n").replace(/;/g,";\n").replace(/\n\s*\n/g,"\n").trim();
+}
+
+function minifyJS(s){
+return s.replace(/\/\*[\s\S]*?\*\//g,"").replace(/\/\/.*$/gm,"").replace(/\s+/g," ").replace(/\s*([{}();,:=+\-*\/])\s*/g,"$1").trim();
+}
+
+function generateUUIDs(){
+let n=Math.min(20,Math.max(1,Number(uuidCount.value)||1));
+devResult.textContent=Array.from({length:n},()=>crypto.randomUUID()).join("\n");
+}
+
+function timestampAction(){
+let mode=timestampMode.value;
+if(mode==="now"){
+devResult.textContent=`Seconds: ${Math.floor(Date.now()/1000)}
+Milliseconds: ${Date.now()}
+Date: ${new Date().toLocaleString("ar")}`;
+return;
+}
+let n=Number(timestampInput.value);
+if(!Number.isFinite(n)){devResult.textContent="Timestamp غير صالح";return}
+let d=new Date(mode==="seconds"?n*1000:n);
+devResult.textContent=d.toLocaleString("ar");
+}
+
+async function hashAction(){
+try{
+const data=new TextEncoder().encode(devInput.value);
+const hash=await crypto.subtle.digest(hashAlgorithm.value,data);
+devResult.textContent=[...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}catch{
+devResult.textContent="حدث خطأ";
+}
+}
+
+function copyResult(){
+const text=document.getElementById("devResult")?.textContent||"";
+if(!text)return;
+navigator.clipboard?.writeText(text);
+showToast("تم النسخ");
+}
+
+function networkPage(){
+return `<div class="card">
+<h3>IPv4 / CIDR</h3>
+<input id="ipInput" placeholder="192.168.1.10/24" dir="ltr">
+<button class="btn" style="margin-top:8px;width:100%" onclick="calculateIP()">احسب</button>
+<div class="result" id="ipResult"></div>
+</div>
+<div class="card">
+<h3>HTTP Status Codes</h3>
+<select onchange="document.getElementById('httpInfo').textContent=this.value">
+<option value="200 OK">200 OK — نجاح الطلب</option>
+<option value="201 Created">201 Created — تم الإنشاء</option>
+<option value="204 No Content">204 No Content — بدون محتوى</option>
+<option value="301 Moved Permanently">301 — تحويل دائم</option>
+<option value="302 Found">302 — تحويل مؤقت</option>
+<option value="400 Bad Request">400 — طلب غير صالح</option>
+<option value="401 Unauthorized">401 — يحتاج مصادقة</option>
+<option value="403 Forbidden">403 — ممنوع</option>
+<option value="404 Not Found">404 — غير موجود</option>
+<option value="429 Too Many Requests">429 — طلبات كثيرة</option>
+<option value="500 Internal Server Error">500 — خطأ بالخادم</option>
+<option value="502 Bad Gateway">502 — Bad Gateway</option>
+<option value="503 Service Unavailable">503 — الخدمة غير متاحة</option>
+</select>
+<div class="result" id="httpInfo">200 OK</div>
+</div>`;
+}
+
+function ipToInt(ip){
+return ip.split(".").reduce((n,x)=>(n<<8)+Number(x),0)>>>0;
+}
+function intToIP(n){
+return [n>>>24,(n>>>16)&255,(n>>>8)&255,n&255].join(".");
+}
+function calculateIP(){
+try{
+let [ip,cidr]=ipInput.value.trim().split("/");
+let p=Number(cidr);
+if(!ip||p<0||p>32)throw 0;
+let x=ipToInt(ip);
+let mask=p===0?0:(0xffffffff<<(32-p))>>>0;
+let network=(x&mask)>>>0;
+let broadcast=(network|(~mask))>>>0;
+let hosts=p>=31?Math.pow(2,32-p):Math.pow(2,32-p)-2;
+ipResult.textContent=`Network: ${intToIP(network)}
+Broadcast: ${intToIP(broadcast)}
+Subnet Mask: ${intToIP(mask)}
+Hosts: ${hosts}`;
+}catch{
+ipResult.textContent="عنوان IP أو CIDR غير صالح";
+}
+}
+
+function textToolsPage(){
+return `<div class="card">
+<h3>أدوات النصوص</h3>
+<textarea id="textInput" placeholder="اكتب النص هنا..."></textarea>
+<div class="row">
+<button class="btn" onclick="textAction('upper')">UPPERCASE</button>
+<button class="btn" onclick="textAction('lower')">lowercase</button>
+<button class="btn secondary" onclick="textAction('reverse')">عكس</button>
+<button class="btn secondary" onclick="textAction('trim')">تنظيف</button>
+<button class="btn" onclick="textAction('binary')">Binary</button>
+<button class="btn" onclick="textAction('ascii')">ASCII</button>
+</div>
+<div class="result" id="textResult"></div>
+</div>`;
+}
+
+function textAction(type){
+let s=textInput.value,r="";
+if(type==="upper")r=s.toUpperCase();
+if(type==="lower")r=s.toLowerCase();
+if(type==="reverse")r=[...s].reverse().join("");
+if(type==="trim")r=s.replace(/\s+/g," ").trim();
+if(type==="binary")r=[...new TextEncoder().encode(s)].map(x=>x.toString(2).padStart(8,"0")).join(" ");
+if(type==="ascii")r=[...s].map(x=>x.charCodeAt(0)).join(" ");
+textResult.textContent=r;
+}
+
+function colorsPage(){
+return `<div class="card">
+<h3>HEX → RGB / HSL</h3>
+<input id="hexInput" placeholder="#4f46e5" dir="ltr">
+<button class="btn" style="margin-top:8px;width:100%" onclick="convertColor()">تحويل</button>
+<div class="result" id="colorResult"></div>
+</div>`;
+}
+
+function convertColor(){
+let h=hexInput.value.trim().replace("#","");
+if(h.length===3)h=[...h].map(x=>x+x).join("");
+if(!/^[0-9a-fA-F]{6}$/.test(h)){colorResult.textContent="HEX غير صالح";return}
+let r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+let rr=r/255,gg=g/255,bb=b/255;
+let max=Math.max(rr,gg,bb),min=Math.min(rr,gg,bb),d=max-min;
+let l=(max+min)/2,s=0;
+if(d){
+s=l>.5?d/(2-max-min):d/(max+min);
+}
+let hue=0;
+if(d){
+if(max===rr)hue=((gg-bb)/d)%6;
+else if(max===gg)hue=(bb-rr)/d+2;
+else hue=(rr-gg)/d+4;
+hue=Math.round(hue*60);
+if(hue<0)hue+=360;
+}
+colorResult.textContent=`RGB: rgb(${r}, ${g}, ${b})
+HSL: hsl(${hue}, ${Math.round(s*100)}%, ${Math.round(l*100)}%)`;
+}
+
+function securityPage(){
+return `<div class="card">
+<h3>مولد كلمات المرور</h3>
+<div class="row">
+<input id="passLength" type="number" min="4" max="64" value="16">
+<button class="btn" onclick="generatePassword()">توليد</button>
+</div>
+<div class="result" id="passResult"></div>
+</div>
+<div class="card">
+<h3>فحص قوة كلمة المرور</h3>
+<input id="checkPass" type="password" placeholder="كلمة المرور">
+<button class="btn" style="margin-top:8px;width:100%" onclick="checkPassword()">فحص</button>
+<div class="result" id="passCheck"></div>
+</div>
+<div class="card">
+<h3>ROT13</h3>
+<input id="rotInput" placeholder="النص">
+<button class="btn" style="margin-top:8px;width:100%" onclick="rot13()">تحويل</button>
+<div class="result" id="rotResult"></div>
+</div>`;
+}
+
+function generatePassword(){
+let chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*";
+let n=Math.min(64,Math.max(4,Number(passLength.value)||16));
+let out="";
+for(let i=0;i<n;i++)out+=chars[Math.floor(Math.random()*chars.length)];
+passResult.textContent=out;
+}
+
+function checkPassword(){
+let p=checkPass.value;
+let score=0;
+if(p.length>=8)score++;
+if(p.length>=12)score++;
+if(/[A-Z]/.test(p))score++;
+if(/[a-z]/.test(p))score++;
+if(/[0-9]/.test(p))score++;
+if(/[^A-Za-z0-9]/.test(p))score++;
+let level=score<=2?"ضعيفة":score<=4?"متوسطة":"قوية";
+passCheck.textContent=`القوة: ${level}
+الطول: ${p.length}
+النقاط: ${score}/6`;
+}
+
+function rot13(){
+rotResult.textContent=rotInput.value.replace(/[A-Za-z]/g,c=>{
+let n=c<="Z"?65:97;
+return String.fromCharCode((c.charCodeAt(0)-n+13)%26+n);
+});
+}
+
+function toolsPage(){
+return `<div class="card">
+<h3>أدوات إضافية</h3>
+<input id="toolNumber" type="number" placeholder="رقم">
+<div class="row">
+<button class="btn" onclick="extraTool('prime')">العوامل الأولية</button>
+<button class="btn" onclick="extraTool('random')">رقم عشوائي</button>
+<button class="btn secondary" onclick="extraTool('gcd')">GCD</button>
+<button class="btn secondary" onclick="extraTool('lcm')">LCM</button>
+</div>
+<div class="result" id="extraResult"></div>
+</div>
+<div class="card">
+<h3>حساب العمر</h3>
+<input id="birthDate" type="date">
+<button class="btn" style="margin-top:8px;width:100%" onclick="calculateAge()">احسب العمر</button>
+<div class="result" id="ageResult"></div>
+</div>
+<div class="card">
+<h3>الوقت بين تاريخين</h3>
+<div class="row">
+<input id="date1" type="date">
+<input id="date2" type="date">
+</div>
+<button class="btn" style="margin-top:8px;width:100%" onclick="dateDiff()">احسب الفرق</button>
+<div class="result" id="dateResult"></div>
+</div>`;
+}
+
+function extraTool(type){
+let n=Number(toolNumber.value);
+if(type==="random")extraResult.textContent=Math.floor(Math.random()*(n||100))+1;
+if(type==="prime"){
+if(!Number.isInteger(n)||n<2){extraResult.textContent="أدخل عددًا صحيحًا أكبر من 1";return}
+let x=n,a=[];
+for(let p=2;p*p<=x;p++)while(x%p===0){a.push(p);x/=p}
+if(x>1)a.push(x);
+extraResult.textContent=a.join(" × ");
+}
+if(type==="gcd"){
+let a=n,b=Number(prompt("أدخل الرقم الثاني"));
+while(b){[a,b]=[b,a%b]}
+extraResult.textContent=a;
+}
+if(type==="lcm"){
+let a=n,b=Number(prompt("أدخل الرقم الثاني")),x=a,y=b;
+while(y){[x,y]=[y,x%y]}
+extraResult.textContent=Math.abs(a*b/x);
+}
+}
+
+function calculateAge(){
+let d=new Date(birthDate.value);
+if(isNaN(d)){ageResult.textContent="اختر تاريخ الميلاد";return}
+let now=new Date();
+let years=now.getFullYear()-d.getFullYear();
+let m=now.getMonth()-d.getMonth();
+if(m<0||(m===0&&now.getDate()<d.getDate()))years--;
+ageResult.textContent=`العمر التقريبي: ${years} سنة`;
+}
+
+function dateDiff(){
+let a=new Date(date1.value),b=new Date(date2.value);
+if(isNaN(a)||isNaN(b)){dateResult.textContent="اختر التاريخين";return}
+let days=Math.abs(b-a)/86400000;
+dateResult.textContent=`الفرق: ${days} يوم`;
+}
+
+function favoritesPage(){
+return `<div id="favoritesBox"></div>`;
+}
+
+function renderFavorites(){
+let box=document.getElementById("favoritesBox");
+let list=categories.filter(x=>favorites.includes(x[3]));
+box.innerHTML=list.length?list.map(x=>`
+<div class="card" onclick="openScreen('${x[3]}')">
+<strong>${x[0]} ${x[1]}</strong>
+<div style="color:var(--muted)">${x[2]}</div>
+</div>`).join(""):"<div class='empty'>لا توجد أدوات مفضلة</div>";
+}
+
+function aboutPage(){
+return `<div class="card info">
+<h2>Ahmed Ali Nour</h2>
+<p><b>Software Developer • Student • Technology Enthusiast</b></p>
+<p>مطوّر مهتم ببناء التطبيقات والأدوات البرمجية الحديثة وتعلّم التقنيات المختلفة.</p>
+<h3>المهارات</h3>
+<span class="badge">Python</span>
+<span class="badge">Java</span>
+<span class="badge">JavaScript</span>
+<span class="badge">HTML</span>
+<span class="badge">CSS</span>
+<span class="badge">PWA</span>
+<span class="badge">GitHub</span>
+<span class="badge">Termux</span>
+<h3>الاهتمامات</h3>
+<p>الذكاء الاصطناعي • تطوير البرمجيات • الأمن السيبراني • الشبكات • أدوات المطورين</p>
+<h3>My Calculator</h3>
+<p>تطبيق متعدد الأدوات للحسابات الرياضية والتحويلات وأدوات المطور والشبكات والنصوص.</p>
+<p><b>الإصدار:</b> 1.0.0</p>
+</div>`;
+}
+
+function historyPage(){
+return `<div class="card">
+<div class="row">
+<button class="btn danger" onclick="clearHistory()">مسح السجل</button>
+<button class="btn secondary" onclick="goHome()">الرئيسية</button>
+</div>
+<div style="margin-top:10px" id="historyList"></div>
+</div>`;
+}
+
+function renderHistory(){
+const box=document.getElementById("historyList");
+if(!box)return;
+box.innerHTML=history.length?history.map((x,i)=>`
+<div class="history-item" onclick="loadHistory(${i})">
+<b>${escapeHTML(x.expr)}</b> = ${escapeHTML(String(x.result))}
+<small>${escapeHTML(x.date)}</small>
+</div>`).join(""):"<div class='empty'>لا يوجد سجل</div>";
+}
+
+function loadHistory(i){
+calcValue=history[i].expr;
+openScreen("calculator");
+setTimeout(()=>{
+if(document.getElementById("calcExpression"))updateCalc();
+},0);
+}
+
+function clearHistory(){
+history=[];
+localStorage.removeItem("mc_history");
+renderHistory();
+showToast("تم مسح السجل");
+}
+
+function settingsPage(){
+return `<div class="card">
+<h3>المظهر</h3>
+<div class="switch">
+<span>الوضع الليلي</span>
+<input id="darkToggle" type="checkbox" onchange="setDark(this.checked)">
+</div>
+<h3 style="margin-top:15px">لون التطبيق</h3>
+<div class="color-row">
+<button class="color" style="background:#4f46e5" onclick="setAccent('#4f46e5')"></button>
+<button class="color" style="background:#2563eb" onclick="setAccent('#2563eb')"></button>
+<button class="color" style="background:#16a34a" onclick="setAccent('#16a34a')"></button>
+<button class="color" style="background:#f97316" onclick="setAccent('#f97316')"></button>
+<button class="color" style="background:#dc2626" onclick="setAccent('#dc2626')"></button>
+</div>
+</div>
+<div class="card">
+<h3>البيانات</h3>
+<button class="btn danger" style="width:100%" onclick="clearAllData()">إعادة ضبط التطبيق</button>
+</div>
+<div class="card">
+<h3>التطبيق</h3>
+<p>My Calculator</p>
+<p>الإصدار 1.0.0</p>
+<button id="installBtn" class="btn" style="width:100%;display:none" onclick="installApp()">تثبيت التطبيق</button>
+</div>`;
+}
+
+function initSettings(){
+document.getElementById("darkToggle").checked=document.body.classList.contains("dark");
+document.getElementById("installBtn").style.display=deferredPrompt?"block":"none";
+}
+
+function setDark(v){
+document.body.classList.toggle("dark",v);
+localStorage.setItem("mc_dark",v?"1":"0");
+}
+
+function setAccent(v){
+document.documentElement.style.setProperty("--primary",v);
+document.documentElement.style.setProperty("--primary2",v);
+localStorage.setItem("mc_accent",v);
+}
+
+function clearAllData(){
+if(confirm("هل تريد حذف جميع بيانات التطبيق؟")){
+localStorage.removeItem("mc_history");
+localStorage.removeItem("mc_favorites");
+localStorage.removeItem("mc_dark");
+localStorage.removeItem("mc_accent");
+history=[];
+favorites=[];
+location.reload();
+}
+}
+
+function escapeHTML(s){
+return String(s).replace(/[&<>"']/g,c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[c]));
+}
+
+function showToast(text){
+let old=document.getElementById("toast");
+if(old)old.remove();
+let t=document.createElement("div");
+t.id="toast";
+t.textContent=text;
+Object.assign(t.style,{
+position:"fixed",
+bottom:"22px",
+left:"50%",
+transform:"translateX(-50%)",
+background:"#111827",
+color:"#fff",
+padding:"11px 16px",
+borderRadius:"12px",
+zIndex:9999
+});
+document.body.appendChild(t);
+setTimeout(()=>t.remove(),1800);
+}
+
+document.addEventListener("keydown",e=>{
+if(currentScreen==="calculator"){
+if(/[0-9.+\-*/%()]/.test(e.key))calcInput(e.key);
+if(e.key==="Enter")calcEquals();
+if(e.key==="Escape")calcClear();
+}
+});
+
+window.addEventListener("beforeinstallprompt",e=>{
+e.preventDefault();
+deferredPrompt=e;
+});
+
+async function installApp(){
+if(!deferredPrompt)return;
+deferredPrompt.prompt();
+await deferredPrompt.userChoice;
+deferredPrompt=null;
+}
+
+const savedDark=localStorage.getItem("mc_dark");
+const savedAccent=localStorage.getItem("mc_accent");
+if(savedDark==="1")document.body.classList.add("dark");
+if(savedAccent){
+document.documentElement.style.setProperty("--primary",savedAccent);
+document.documentElement.style.setProperty("--primary2",savedAccent);
+}
+
+renderHome();
+
+const oldOpenScreen=openScreen;
+openScreen=function(id){
+oldOpenScreen(id);
+if(id==="history")setTimeout(renderHistory,0);
+};
+
+if("serviceWorker" in navigator){
+window.addEventListener("load",()=>{
+navigator.serviceWorker.register("./sw.js");
+});
+}
+</script>
+</body>
+  </html>
